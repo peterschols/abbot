@@ -219,7 +219,7 @@ module SC
         #end
 
         # Add preferred language definition, before other scripts...
-        ret <<  %(<script type="text/javascript">String.preferredLanguage = "#{language}";</script>)
+        ret <<  %(String.preferredLanguage = "#{language}";)
 
         # Reference any inlined bootstrap scripts
         if (resources_names = target.config[:bootstrap_inline])
