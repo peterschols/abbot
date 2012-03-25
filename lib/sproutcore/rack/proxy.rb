@@ -278,7 +278,7 @@ if SC::PROXY_ENABLED
             next unless key =~ /^HTTP_/
 
             key = headerize(key)
-            if !key.eql? "Version"
+            if !key.eql? "Version" && !(key.downcase != 'content-encoding')
               result[key] = value
             end
           end

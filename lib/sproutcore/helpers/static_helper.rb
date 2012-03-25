@@ -202,6 +202,35 @@ module SC
         urls
         
       end
+      
+      # Detects and includes any bootstrap code
+      #
+      def bootstrap_without_tags
+
+        ret = []
+
+        # Reference any external bootstrap scripts
+        # DISABLED since there aren't any (and it would require adding the tags to the DOM via helper JS)
+        
+        #if (resources_names = target.config[:bootstrap])
+        #  Array(resources_names).each do |resource_name|
+        #    ret << %(<script src="#{sc_static(resource_name)}" type="text/javascript" ></script>)
+        #  end
+        #end
+
+        # Add preferred language definition, before other scripts...
+        ret <<  %(<script type="text/javascript">String.preferredLanguage = "#{language}";</script>)
+
+        # Reference any inlined bootstrap scripts
+        if (resources_names = target.config[:bootstrap_inline])
+          Array(resources_names).each do |resource_name|
+            ret << inline_javascript_without_tags(resource_name)
+          end
+        end
+        
+        return ret * "\n"
+      end
+      
 
       # Detects and includes any bootstrap code
       #
@@ -228,6 +257,36 @@ module SC
         
         return ret * "\n"
       end
+      
+      
+      # Attempts to include the named javascript entry inline to the file, without <script> tags
+      #
+      # === Options
+      #  language:: the language to use.  defaults to current
+      #
+      def inline_javascript_without_tags(resource_name, opts ={})
+
+        resource_name = resource_name.to_s
+
+        # determine which manifest to search.  if a language is explicitly
+        # specified, lookup manifest for that language.  otherwise use
+        # current manifest.
+        m = self.manifest
+        if opts[:language]
+          m = target.manifest_for(:language => opts[:language]).build!
+        end
+
+        entry = m.find_entry(resource_name, :entry_type => :javascript)
+        if entry.nil?
+          entry = m.find_entry(resource_name, :hidden => true, :entry_type => :javascript)
+        end
+
+        return '' if entry.nil?
+
+        ret = entry.stage!.inline_contents*''
+        return %(#{ret})
+      end
+      
 
       # Attempts to include the named javascript entry inline to the file
       #
