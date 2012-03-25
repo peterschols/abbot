@@ -50,7 +50,7 @@ module SC
         help('build')
         return
       end
-
+      
       t1 = Time.now
       SC.logger.info  'Starting build process...'
       # Copy some key props to the env
