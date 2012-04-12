@@ -60,6 +60,7 @@ module SC
       SC.env.build_prefix   = options.buildroot if options.buildroot
       SC.env.staging_prefix = options.stageroot if options.stageroot
       SC.env.use_symlink    = options.symlink
+      
 
       # Get entries option
       entry_filters = nil
